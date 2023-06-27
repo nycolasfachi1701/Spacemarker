@@ -5,7 +5,7 @@ import pickle
 
 pygame.init()
 largura_tela = 800
-altura_tela = 600
+altura_tela = 500
 tela = pygame.display.set_mode((largura_tela, altura_tela))
 pygame.display.set_caption("Space Marker")
 fundo = pygame.image.load("bg.jpg")
@@ -37,7 +37,7 @@ def salvar_marcacoes():
             pickle.dump(marcacoes, file)
         historico_salvos.append(marcacoes.copy())
         messagebox.showinfo("Sucesso", "Marcações salvas com sucesso.")
-        pygame.time.delay(3000)  # Exibe a mensagem por 3 segundos
+        pygame.time.delay(3000)  
     except IOError:
         messagebox.showerror("Erro", "Erro ao salvar as marcações.")
 
@@ -48,21 +48,20 @@ def carregar_marcacoes():
         historico_excluidos.append(marcacoes.copy())
         coordenadas_salvas = "\n".join([f"({m.posicao[0]}, {m.posicao[1]}) - {m.nome}" for m in marcacoes])
         messagebox.showinfo("Sucesso", f"Marcações carregadas com sucesso:\n{coordenadas_salvas}")
-        pygame.time.delay(3000)  # Exibe a mensagem por 3 segundos
+        pygame.time.delay(3000) 
     except FileNotFoundError:
         messagebox.showerror("Erro", "Arquivo de marcações não encontrado.")
 
 def excluir_marcacoes():
     marcacoes.clear()
     messagebox.showinfo("Sucesso", "Todas as marcações foram excluídas.")
-    pygame.time.delay(3000)  # Exibe a mensagem por 3 segundos
+    pygame.time.delay(3000)  
 
-# Inicializando o reconhecimento do som
 pygame.mixer.init()
 
 play_music("Space_Machine_Power.mp3")
 
-fonte = pygame.font.Font(None, 24)  # Definindo a fonte para o texto
+fonte = pygame.font.Font(None, 24)  
 
 running = True
 while running:
@@ -89,9 +88,7 @@ while running:
             star_name = get_star_info()
             marcacoes.append(Marcacao(mouse_position, star_name))
 
-    tela.blit(fundo, (0, 0))  # Desenha o fundo na tela
-
-    # Desenha as marcações na tela
+    tela.blit(fundo, (0, 0))  
     for i, marcacao in enumerate(marcacoes):
         pygame.draw.circle(tela, (255, 255, 255), marcacao.posicao, 5)
         if i > 0:
@@ -99,7 +96,6 @@ while running:
         text_surface = pygame.font.SysFont('Arial', 12).render(f'({marcacao.posicao[0]}, {marcacao.posicao[1]}) - {marcacao.nome}', True, (255, 255, 255))
         tela.blit(text_surface, (marcacao.posicao[0]+10, marcacao.posicao[1]-20))
 
-    # Desenha as finalidades das teclas F10, F11 e F12
     texto_f10 = fonte.render("F10: Salvar Marcações", True, (255, 255, 255))
     tela.blit(texto_f10, (10, 10))
 
@@ -109,10 +105,8 @@ while running:
     texto_f12 = fonte.render("F12: Excluir Todas as Marcações", True, (255, 255, 255))
     tela.blit(texto_f12, (10, 70))
 
-    # Atualização da tela
     pygame.display.update()
 
-# Salvando o histórico no arquivo marcacao.txt
 with open("marcacao.txt", "w") as file:
     for i, historico in enumerate(historico_salvos):
         file.write(f"Histórico {i+1}:\n")
