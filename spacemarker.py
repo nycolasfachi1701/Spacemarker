@@ -2,16 +2,18 @@ import pygame
 import tkinter as tk
 from tkinter import simpledialog
 import pickle
+import winsound
 
 pygame.init()
-
-# Configuração da janela
 largura_tela = 800
 altura_tela = 600
 tela = pygame.display.set_mode((largura_tela, altura_tela))
 pygame.display.set_caption("Space Marker")
+space = pygame.image.load("space.png")
+pygame.display.set_icon(space)
 
-# Classe para representar uma marcação
+
+
 class Marcacao:
     def __init__(self, posicao, nome):
         self.posicao = posicao
