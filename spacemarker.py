@@ -9,8 +9,8 @@ altura_tela = 600
 tela = pygame.display.set_mode((largura_tela, altura_tela))
 pygame.display.set_caption("Space Marker")
 fundo = pygame.image.load("bg.jpg")
-space = pygame.image.load("space.ico")
-pygame.display.set_icon(space)
+icone = pygame.image.load("space.ico")
+pygame.display.set_icon(icone)
 
 def play_music(file):
     pygame.mixer.music.load(file)
