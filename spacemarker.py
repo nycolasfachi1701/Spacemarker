@@ -1,6 +1,7 @@
 import pygame
 import tkinter as tk
 from tkinter import simpledialog, messagebox
+import pickle
 
 pygame.init()
 largura_tela = 800
@@ -8,6 +9,8 @@ altura_tela = 600
 tela = pygame.display.set_mode((largura_tela, altura_tela))
 pygame.display.set_caption("Space Marker")
 fundo = pygame.image.load("bg.jpg")
+space = pygame.image.load("space.ico")
+pygame.display.set_icon(space)
 
 def play_music(file):
     pygame.mixer.music.load(file)
@@ -29,26 +32,30 @@ def get_star_info():
     return star_name
 
 def salvar_marcacoes():
-    historico_salvos.append(marcacoes.copy())
-    messagebox.showinfo("Sucesso", "Marcações salvas com sucesso.")
-    pygame.time.delay(2000)  # Exibe a mensagem por 2 segundos
+    try:
+        with open("marcacoes.pickle", "wb") as file:
+            pickle.dump(marcacoes, file)
+        historico_salvos.append(marcacoes.copy())
+        messagebox.showinfo("Sucesso", "Marcações salvas com sucesso.")
+        pygame.time.delay(3000)  # Exibe a mensagem por 3 segundos
+    except IOError:
+        messagebox.showerror("Erro", "Erro ao salvar as marcações.")
 
 def carregar_marcacoes():
-    if len(historico_salvos) > 0:
-        marcacoes = historico_salvos[-1].copy()
-        messagebox.showinfo("Sucesso", "Marcações carregadas com sucesso.")
-        pygame.time.delay(2000)  # Exibe a mensagem por 2 segundos
-    else:
-        messagebox.showerror("Erro", "Nenhuma marcação salva encontrada.")
+    try:
+        with open("marcacoes.pickle", "rb") as file:
+            marcacoes = pickle.load(file)
+        historico_excluidos.append(marcacoes.copy())
+        coordenadas_salvas = "\n".join([f"({m.posicao[0]}, {m.posicao[1]}) - {m.nome}" for m in marcacoes])
+        messagebox.showinfo("Sucesso", f"Marcações carregadas com sucesso:\n{coordenadas_salvas}")
+        pygame.time.delay(3000)  # Exibe a mensagem por 3 segundos
+    except FileNotFoundError:
+        messagebox.showerror("Erro", "Arquivo de marcações não encontrado.")
 
 def excluir_marcacoes():
-    if len(marcacoes) > 0:
-        historico_excluidos.append(marcacoes.copy())
-        marcacoes.clear()
-        messagebox.showinfo("Sucesso", "Todas as marcações foram excluídas.")
-        pygame.time.delay(2000)  # Exibe a mensagem por 2 segundos
-    else:
-        messagebox.showerror("Erro", "Nenhuma marcação para excluir.")
+    marcacoes.clear()
+    messagebox.showinfo("Sucesso", "Todas as marcações foram excluídas.")
+    pygame.time.delay(3000)  # Exibe a mensagem por 3 segundos
 
 # Inicializando o reconhecimento do som
 pygame.mixer.init()
@@ -71,8 +78,12 @@ while running:
                 salvar_marcacoes()
             elif event.key == pygame.K_F11:
                 carregar_marcacoes()
+                if len(historico_excluidos) > 0:
+                    marcacoes = historico_excluidos[-1].copy()
             elif event.key == pygame.K_F12:
                 excluir_marcacoes()
+                if len(historico_salvos) > 0:
+                    marcacoes = historico_salvos[-1].copy()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_position = pygame.mouse.get_pos()
             star_name = get_star_info()
@@ -100,5 +111,12 @@ while running:
 
     # Atualização da tela
     pygame.display.update()
+
+# Salvando o histórico no arquivo marcacao.txt
+with open("marcacao.txt", "w") as file:
+    for i, historico in enumerate(historico_salvos):
+        file.write(f"Histórico {i+1}:\n")
+        for marcacao in historico:
+            file.write(f"({marcacao.posicao[0]}, {marcacao.posicao[1]}) - {marcacao.nome}\n")
 
 pygame.quit()
