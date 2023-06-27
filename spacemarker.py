@@ -27,7 +27,6 @@ def get_star_name():
     star_name = simpledialog.askstring("Nome da Estrela", "Insira o nome da estrela:")
     return star_name
 
-# Função para salvar as marcações em arquivo
 def salvar_marcacoes():
     with open("marcacoes.pickle", "wb") as file:
         pickle.dump(marcacoes, file)
@@ -42,16 +41,14 @@ def carregar_marcacoes():
     except FileNotFoundError:
         print("Arquivo de marcações não encontrado.")
 
-# Função para excluir todas as marcações
 def excluir_marcacoes():
     marcacoes.clear()
     print("Todas as marcações foram excluídas.")
 
+#Inicializando o reconhecimento do som
 pygame.mixer.init()
 
-# Reproduz a música
 play_music("Space_Machine_Power.mp3")
-# Loop principal do jogo
 
 running = True
 while running:
