@@ -2,17 +2,17 @@ import pygame
 import tkinter as tk
 from tkinter import simpledialog
 import pickle
-import winsound
 
 pygame.init()
 largura_tela = 800
 altura_tela = 600
 tela = pygame.display.set_mode((largura_tela, altura_tela))
 pygame.display.set_caption("Space Marker")
-space = pygame.image.load("space.png")
-pygame.display.set_icon(space)
+fundo = pygame.image.load("bg.jpg")
 
-
+def play_music(file):
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play(-1)
 
 class Marcacao:
     def __init__(self, posicao, nome):
@@ -47,7 +47,12 @@ def excluir_marcacoes():
     marcacoes.clear()
     print("Todas as marcações foram excluídas.")
 
+pygame.mixer.init()
+
+# Reproduz a música
+play_music("Space_Machine_Power.mp3")
 # Loop principal do jogo
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -59,9 +64,9 @@ while running:
             star_name = get_star_name()
             marcacoes.append(Marcacao(mouse_position, star_name))
 
-    tela.fill((255, 255, 255))  # Preenche a tela com a cor branca
+    tela.blit(fundo, (0, 0))  # Desenha o fundo na tela
 
-    # Desenhe as marcações na tela
+    # Desenha as marcações na tela
     for marcacao in marcacoes:
         pygame.draw.circle(tela, (255, 0, 0), marcacao.posicao, 5)
 
